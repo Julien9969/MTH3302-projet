@@ -32,11 +32,7 @@ Vous devez prédire la consommation en carburant de voitures récentes. Le jeu d
 ### Évaluation des Prédictions
 
 Les performances de votre modèle seront mesurées avec la **racine de l'erreur quadratique moyenne (RMSE)** :
-
-\[
-\text{RMSE}(y^)=\sqrt{\frac{1}{n} \sum_{i=1}^{n} (y^i - y_i)^2}
-\]
-
+${RMSE}(y^)=\sqrt{\frac{1}{n} \sum_{i=1}^{n} (y^i - y_i)^2}$
 ### Format du Fichier de Prédictions
 
 Le fichier de résultats à téléverser doit être un fichier **CSV** contenant deux colonnes :

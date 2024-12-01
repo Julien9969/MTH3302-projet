@@ -2,8 +2,6 @@ using GLM
 using MLJ
 using StatsModels
 using Turing
-using Distributions
-
 
 function remove_outliers(data, features::Vector{Symbol}, target::Symbol=:y)
     formula = Term(target) ~ sum(Term(Symbol(feature)) for feature in features)
@@ -168,24 +166,21 @@ function elastic_net_regression_cv(X, y, k_folds=5)
     return mach
 end
 
-@model function bayesian_regression(X, y)
+@model function bayesian_regression(X, y, priors)
     features = names(X)
-    n = size(X, 1)
     predictors = size(X, 2)
 
+    α ~ Normal(mean(y), std(y))
     β = zeros(predictors)
     for i in 1:predictors
-        if features[i] == "cylindree"
-            β[i] ~ LogNormal(5.981630883156576, 3.6476067440594417)
-        elseif features[i] == "nombre_cylindres"
-            β[i] ~ Normal(5.479391634980988, 1.7817038897119009)
+        if haskey(priors, features[i])
+            β[i] ~ priors[features[i]]
         else 
             β[i] ~ Laplace(0, 1)
+            # β[i] ~ Normal(0, 1)
         end
     end
-    α ~ Normal(mean(y), std(y))
-
-    σ² ~ InverseGamma(2, 1)
+    σ² ~ InverseGamma(1, 2)
 
     μ = α .+ Matrix(X) * β
     Σ = σ² * I
@@ -199,7 +194,7 @@ function bayesian_prediction(chain, X)
 
     α̂ = params.α
     β̂ = reduce(hcat, params.β)
-    ŷ_dists = α̂' .+ Matrix(X) * β̂'
+    targets = α̂' .+ Matrix(X) * β̂'
 
-    return [mean(ŷ_dists[i, :]) for i in 1:size(ŷ_dists, 1)]
+    return vec(mean(targets; dims=2))
 end

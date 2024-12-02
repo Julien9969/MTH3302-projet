@@ -24,7 +24,7 @@ function remove_outliers(data, features::Vector{Symbol}, target::Symbol=:y)
     return data
 end
 
-function create_model(data, features::Vector{Symbol}, target::Symbol=:y)
+function linear_model(data, features::Vector{Symbol}, target::Symbol=:y)
     formula = Term(target) ~ sum(Term(feature) for feature in filter(x -> x != target, features))
 
     model = lm(formula, data)
@@ -40,8 +40,8 @@ function create_model(data, target::Symbol=:y)
     return model
 end
 
-function encode(data, categorical_features, continuous_features, ordinal_features)
-    for feature in categorical_features
+function encode(data, nominal_features, continuous_features, ordinal_features)
+    for feature in nominal_features
         coerce!(data, feature => Multiclass)
     end
 
@@ -62,6 +62,13 @@ function encode(data, categorical_features, continuous_features, ordinal_feature
     end
 
     return data
+end
+
+function get_updated_features(data, features) 
+    return vec(reduce(vcat, [
+        filter(name -> startswith(name, string(feature)), names(data))
+        for feature in features
+    ]))
 end
 
 function linear_regression(X, y)

@@ -168,7 +168,6 @@ function elastic_net_regression_cv(X, y, k_folds=5)
     mach = machine(ElasticNetRegressor(lambda=λ̂, gamma=γ̂), X, y)
     fit!(mach, verbosity=0)
 
-    # return λ̂, γ̂
     return mach
 end
 

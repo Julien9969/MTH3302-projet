@@ -106,7 +106,7 @@ function ridge_regression_cv(X, y, k_folds=5)
     mach = machine(RidgeRegressor(lambda = λ̂) , X, y)
     fit!(mach, verbosity=0)
 
-    return mach
+    return mach, λ̂
 end
 
 function lasso_regression_cv(X, y, k_folds=5)
@@ -131,7 +131,6 @@ function lasso_regression_cv(X, y, k_folds=5)
         end
     end
 
-    println(λ̂)
     mach = machine(LassoRegressor(lambda=λ̂) , X, y)
     fit!(mach, verbosity=0)
 

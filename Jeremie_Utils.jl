@@ -176,8 +176,7 @@ end
         if haskey(priors, features[i])
             β[i] ~ priors[features[i]]
         else 
-            β[i] ~ Laplace(0, 1)
-            # β[i] ~ Normal(0, 1)
+            β[i] ~ Normal(0, 1)
         end
     end
     σ² ~ InverseGamma(1, 2)

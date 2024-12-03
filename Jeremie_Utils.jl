@@ -207,7 +207,7 @@ function bayesian_prediction(chain, X)
     return vec(mean(targets; dims=2))
 end
 
-function standardize(x)
+function standardize_vec(x)
     centered = x .- mean(x)
     return centered ./ std(x)
 end

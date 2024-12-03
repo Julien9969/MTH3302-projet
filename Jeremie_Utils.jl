@@ -181,10 +181,14 @@ end
         if haskey(priors, features[i])
             β[i] ~ priors[features[i]]
         else 
-            β[i] ~ Normal(0, 1)
+            β[i] ~ Normal(0, 3)
         end
     end
-    σ² ~ InverseGamma(1, 2)
+    if (haskey(priors, "σ²"))
+        σ² ~ priors["σ²"]
+    else 
+        σ² ~ InverseGamma(1, 2)
+    end
 
     μ = α .+ Matrix(X) * β
     Σ = σ² * I
@@ -194,11 +198,16 @@ end
 
 # https://turinglang.org/docs/tutorials/05-linear-regression/
 function bayesian_prediction(chain, X)
-    params = get_params(chain[50:end, :, :])
+    params = get_params(chain)
 
     α̂ = params.α
     β̂ = reduce(hcat, params.β)
     targets = α̂' .+ Matrix(X) * β̂'
 
     return vec(mean(targets; dims=2))
+end
+
+function standardize(x)
+    centered = x .- mean(x)
+    return centered ./ std(x)
 end

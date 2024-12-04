@@ -81,8 +81,8 @@ function linear_regression(X, y)
     return mach
 end
 
+RidgeRegressor = @load RidgeRegressor pkg=MLJLinearModels verbosity=0 
 function ridge_regression_cv(X, y, k_folds=5)
-    RidgeRegressor = @load RidgeRegressor pkg=MLJLinearModels verbosity=0 
     lambdas = 10 .^ LinRange(-4, 4, 100)
     cv = CV(nfolds=k_folds)
 
@@ -103,7 +103,7 @@ function ridge_regression_cv(X, y, k_folds=5)
         end
     end
 
-    mach = machine(RidgeRegressor(lambda = λ̂) , X, y)
+    mach = machine(RidgeRegressor(lambda=λ̂) , X, y)
     fit!(mach, verbosity=0)
 
     return mach, λ̂
